@@ -1,3 +1,9 @@
+# my directories to ignore
+pysaliency_datasets/
+pyscanpath/models/Iorroi/checkpoint
+pyscanpath/models/Iorroi/data
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
