@@ -3,7 +3,7 @@ import numpy as np
 
 def plotScanpath1(img, scanpath_list, methods_list):
     list_len = len(scanpath_list)
-    _, ax = plt.subplots(list_len, 1, figsize = (12 * list_len, 12))
+    _, ax = plt.subplots(1, list_len, figsize = (12, 12 * list_len))
     for i in range(list_len):
         if list_len == 1:
             ax.imshow(img)

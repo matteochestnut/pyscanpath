@@ -1,26 +1,9 @@
-DeepGazeIII:
-torch
 numpy
-
-DeepGaze aggiunti da me:
 pysaliency
-openvision
-scipy
-
-CLE:
-numpy
-scipy
-openvision
-
-IttiKoch:
-numpy
-openvision
-
-Saliency:
-numpy
-openvision
-
-metrics:
-natural language toolkit (nltk)
 scipy
 tabulate
+nltk
+matplotlib
+torch
+openvision
+pillow

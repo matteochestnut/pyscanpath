@@ -1,11 +1,8 @@
-from matplotlib import axis
 import numpy as np
 from scipy.spatial.distance import euclidean
 from nltk.metrics.distance import edit_distance
 import random
 from tabulate import tabulate
-
-import pandas as pd
 
 def euclidean_distance(P,Q):
     scanpath_len = min(P.shape[0], Q.shape[0]) - 1
