@@ -37,12 +37,7 @@ Edit distance and time delay embedding implementations are taken from __[FixaTon
 ---
 
 **Datasets**
-<<<<<<< HEAD
-Pyscanpath let test the models on the MIT1003 dataset, the CAT3000 dataset and the OSIE dataset which can be accessed via the datasets module. This funtcionality is implemented upon __[pysaliency](https://github.com/matthias-k/pysaliency/tree/dev)__ which needs to be installed.
-=======
-
-Pyscanpath let test the models on the MIT1003 dataset and the CAT3000 dataset which can be accessed via the datasets module. This funtcionality is implemented upon __[pysaliency](https://github.com/matthias-k/pysaliency/tree/dev)__ which needs to be installed.
->>>>>>> 95e05d9b85ba57d0e39a319df387bc9e0a796e8d
+Pyscanpath let test the models on the MIT1003 dataset, the CAT3000 dataset and the OSIE dataset which can be accessed via the datasets module. This functionality is implemented upon __[pysaliency](https://github.com/matthias-k/pysaliency/tree/dev)__ which needs to be installed.
 The models can be tested on images and scanpaths, provided as numpy arrays, singularly too, as can be seen in demo.ipynb.
 
 ---
