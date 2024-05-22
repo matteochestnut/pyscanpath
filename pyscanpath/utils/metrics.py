@@ -4,10 +4,32 @@ from nltk.metrics.distance import edit_distance
 import random
 from tabulate import tabulate
 
-def euclidean_distance(P,Q):
+def euclidean_distance(P, Q):
     scanpath_len = min(P.shape[0], Q.shape[0]) - 1
+    
     return np.linalg.norm(
         np.sqrt( (P[0 : scanpath_len, 0] - Q[0 : scanpath_len, 0])**2 + (P[0 : scanpath_len, 1] - Q[0 : scanpath_len, 1])**2 ) )
+
+def scaled_euclidean_distance(P, Q, height, width):
+    scanpath_len = min(P.shape[0], Q.shape[0]) - 1
+    
+    P_scanpath = np.copy(P)
+    Q_scanpath = np.copy(Q)
+
+    # First, coordinates are rescaled as to an image with maximum dimension 1
+    # This is because, clearly, smaller images would produce smaller distances
+    max_dim = max(height, width)
+
+    for fixation in P_scanpath:
+        fixation[0] /= max_dim
+        fixation[1] /= max_dim
+
+    for fixation in Q_scanpath:
+        fixation[0] /= max_dim
+        fixation[1] /= max_dim
+    
+    return np.mean(
+        np.sqrt( (P_scanpath[0 : scanpath_len, 0] - Q_scanpath[0 : scanpath_len, 0])**2 + (P_scanpath[0 : scanpath_len, 1] - Q_scanpath[0 : scanpath_len, 1])**2 ) )
     
 def random_scanpath(scanpath_len, height, width):
 		scanpath = np.zeros( (scanpath_len, 2) )
@@ -40,7 +62,8 @@ def mannan_distance(P, Q, height, width):
     QR = random_scanpath(Q.shape[0], height, width)
     dr = D(PR, QR, height, width)
     
-    return np.abs( 1 - ( np.sqrt(d) / np.sqrt(dr) ) ) * 100
+    # return mannan distance similarity between 0 and 1 (0 completely different, 1 completely similar)
+    return np.abs( 1 - ( np.sqrt(d) / np.sqrt(dr) ) ) #* 100
 
 def scanpath_to_string(scanpath, height, width, grid_size):
     '''
@@ -64,9 +87,10 @@ def levenshtein_distance(P,Q, height, width, grid_size = 8):
 	'''
 	Levenshtein distance, or edit distance
 	'''
-	P = scanpath_to_string(P, height, width, grid_size)
-	Q = scanpath_to_string(Q, height, width, grid_size)
-	return edit_distance(P, Q)
+	P_string = scanpath_to_string(P, height, width, grid_size)
+	Q_string = scanpath_to_string(Q, height, width, grid_size)
+    # normalizing the edit distance by the maximum length between the two scanpaths
+	return edit_distance(P_string, Q_string) / max(P.shape[0], Q.shape[0])
 
 def time_delay_embedding_distance(P, Q, k=3, distance_mode='Mean'):
     '''
@@ -111,6 +135,44 @@ def time_delay_embedding_distance(P, Q, k=3, distance_mode='Mean'):
         print('ERROR: distance mode not defined.')
         return False
 
+def scaled_time_delay_embedding_distance(P, Q, height, width):
+    '''
+	scaled time delay embedding distance
+	From Fixatons:
+    https://github.com/dariozanca/FixaTons 
+	'''
+    # to preserve data, we work on copies of the lists
+    P_scanpath = np.copy(P)
+    Q_scanpath = np.copy(Q)
+
+    # First, coordinates are rescaled as to an image with maximum dimension 1
+    # This is because, clearly, smaller images would produce smaller distances
+    max_dim = max(height, width)
+
+    for fixation in P_scanpath:
+        fixation[0] /= max_dim
+        fixation[1] /= max_dim
+
+    for fixation in Q_scanpath:
+        fixation[0] /= max_dim
+        fixation[1] /= max_dim
+
+    # Then, scanpath similarity is computer for all possible k
+    max_k = min(len(P_scanpath), len(Q_scanpath))
+    similarities = []
+    for k in np.arange(1, max_k + 1):
+        s = time_delay_embedding_distance(
+            P_scanpath,
+            Q_scanpath,
+            k=k,  # time-embedding vector dimension
+            distance_mode='Mean')
+        similarities.append(np.exp(-s))
+
+    # Now that we have similarity measure for all possible k
+    # we compute and return the mean
+
+    return sum(similarities) / len(similarities)
+
 def printMetrics(img, ground_truth, scanpath_list, methods_list):
     
     table = []
@@ -118,9 +180,9 @@ def printMetrics(img, ground_truth, scanpath_list, methods_list):
     headers = ['Model', 'Euclidean', 'Mannan', 'Levenshtein', 'TDE']
         
     for i in range(len(scanpath_list)):
-        ed = euclidean_distance(ground_truth, scanpath_list[i])
+        ed = scaled_euclidean_distance(ground_truth, scanpath_list[i], img.shape[0], img.shape[1])
         lev = levenshtein_distance(ground_truth, scanpath_list[i], img.shape[0], img.shape[1])
-        tde = time_delay_embedding_distance(ground_truth, scanpath_list[i])
+        tde = scaled_time_delay_embedding_distance(ground_truth, scanpath_list[i], img.shape[0], img.shape[1])
         md = mannan_distance(ground_truth, scanpath_list[i], img.shape[0], img.shape[1])
         scanpath_metrics = [methods_list[i], ed, md, lev, tde]
         table.append(scanpath_metrics)

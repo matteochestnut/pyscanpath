@@ -25,7 +25,7 @@ Four metrics to compute distances or similarity between scanpaths are available:
 Edit distance and time delay embedding implementations are taken from __[FixaTons](https://github.com/dariozanca/FixaTons/tree/master)__.
 
 **Datasets**
-Pyscanpath let test the models on the MIT1003 dataset and the CAT3000 dataset which can be accessed via the datasets module. This funtcionality is implemented upon __[pysaliency](https://github.com/matthias-k/pysaliency/tree/dev)__ which needs to be installed.
+Pyscanpath let test the models on the MIT1003 dataset, the CAT3000 dataset and the OSIE dataset which can be accessed via the datasets module. This funtcionality is implemented upon __[pysaliency](https://github.com/matthias-k/pysaliency/tree/dev)__ which needs to be installed.
 The models can be tested on images and scanpaths, provided as numpy arrays, singularly too, as can be seen in demo.ipynb.
 
 ### Download Pyscanpath

@@ -15,6 +15,8 @@ def getDatasetScanpath(dataset, data_location, stimuli_index, subject_index):
         dataset_stimuli, dataset_fixations = pysaliency.external_datasets.get_mit1003(location = data_location)
     elif dataset == 'CAT2000':
         dataset_stimuli, dataset_fixations = pysaliency.external_datasets.get_cat2000_train(location = data_location)
+    elif dataset == 'OSIE':
+        dataset_stimuli, dataset_fixations = pysaliency.external_datasets.get_OSIE(location = data_location)
         
     img = dataset_stimuli.stimuli[ stimuli_index ]
     subject_fixations = dataset_fixations[dataset_fixations.subjects == subject_index]
